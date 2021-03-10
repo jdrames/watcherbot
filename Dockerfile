@@ -28,6 +28,9 @@ FROM base as final
 # Copy files from the build img to the final image
 COPY --from=build /app .
 
+# Copy settings file
+COPY ./settings.json .
+
 ## Set the docker container timezone
 ## Game notifications will be posted in this timezone
 ENV TZ=America/New_York
