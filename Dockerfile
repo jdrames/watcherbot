@@ -2,7 +2,7 @@
 # You need a settings.json file already in the jenkins working dir for the app to work once built
 
 # Using the microsoft dotnet 5.0 sdk image to build
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 
 # Set working dir
 WORKDIR /src
