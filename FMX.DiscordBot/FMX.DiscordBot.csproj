@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DSharpPlus" Version="4.0.0-rc2" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-rc2" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-rc2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FMX.Shared\FMX.Shared.csproj" />
+    <ProjectReference Include="..\FMX.The100Watcher\FMX.The100Watcher.csproj" />
+    <ProjectReference Include="..\FMX.Utilities\FMX.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
