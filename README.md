@@ -6,7 +6,7 @@ This is the bot that is used to monitor and display updates to groups for games 
 **Active Internet Connection**  
 **.net 5.0 sdk & runtime**  
 **Discord Developer Account**  
-**The100.io API Access Token**
+**The100.io API Access Token**  
 **Available MongoDB Server**
   
 You must include a settings.json file with the following format for the bot to connect and begin listening for requests.
