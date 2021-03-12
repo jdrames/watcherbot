@@ -44,6 +44,7 @@ namespace FMX.DiscordBot.Commands
 
             var gameFilterBuilder = Builders<Game>.Filter;
             var gameFilter = gameFilterBuilder.In(x => x.GroupId, guild.The100Groups)
+                & gameFilterBuilder.Eq(x=>x.IsActive, true)
                 & gameFilterBuilder.Gt(x => x.StartTime, DateTime.UtcNow.AddMinutes(-15));
             var games = (await _gameCollection.FindAsync(gameFilter)).ToList();
 
