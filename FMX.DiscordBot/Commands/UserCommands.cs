@@ -5,11 +5,13 @@ using DSharpPlus.Interactivity.Extensions;
 using FMX.Shared;
 using FMX.Shared.Settings;
 using FMX.Utilities;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,7 +48,9 @@ namespace FMX.DiscordBot.Commands
             var gameFilter = gameFilterBuilder.In(x => x.GroupId, guild.The100Groups)
                 & gameFilterBuilder.Eq(x=>x.IsActive, true)
                 & gameFilterBuilder.Gt(x => x.StartTime, DateTime.UtcNow.AddMinutes(-15));
-            var games = (await _gameCollection.FindAsync(gameFilter)).ToList();
+            var sort = Builders<Game>.Sort.Ascending(x => x.StartTime);
+
+            var games = (await _gameCollection.FindAsync(gameFilter, new FindOptions<Game, Game> { Sort = sort })).ToList();
 
             if(games.Count == 0)
             {
