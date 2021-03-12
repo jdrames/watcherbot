@@ -5,6 +5,7 @@ using FMX.Utilities;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -102,24 +103,29 @@ namespace FMX.The100Watcher
         private async Task GetGamesForGroups(List<int> groupIds)
         {
             for(int i = 0; i<groupIds.Count; i++)
-            {
+            {                
                 var games = await GetGamesFromThe100(groupIds[i]);
                 games.ForEach(async game => await CheckForChanges(game));
-                await SetInactiveExpiredGames(games);
+                await SetInactiveExpiredGames(groupIds[i], games);
             }
 
         }
 
-        private async Task SetInactiveExpiredGames(List<Game> the100Games)
+        private async Task SetInactiveExpiredGames(int groupId, List<Game> the100Games)
         {
-            var filter = Builders<Game>.Filter.Eq(x => x.IsActive, true);
+            var filterBuilder = Builders<Game>.Filter;
+            var updateBuilder = Builders<Game>.Update;
+
+            var filter = filterBuilder.Eq(x => x.IsActive, true)
+                & filterBuilder.Eq(x=>x.GroupId, groupId);
+
             var dbActiveGames = (await _gameCollection.FindAsync(filter)).ToList();
             foreach(var dbGame in dbActiveGames)
             {
-                if (!the100Games.Contains(dbGame))
+                if (!the100Games.Any(g=>g.Id == dbGame.Id))
                 {
-                    var update = Builders<Game>.Update.Set(x => x.IsActive, false);
-                    var updateFilter = Builders<Game>.Filter.Eq(x => x.Id, dbGame.Id);
+                    var update = updateBuilder.Set(x => x.IsActive, false);
+                    var updateFilter = filterBuilder.Eq(x => x.Id, dbGame.Id);
                     await _gameCollection.UpdateOneAsync(updateFilter, update);
                 }
             }
@@ -128,8 +134,8 @@ namespace FMX.The100Watcher
             // restored back to active if it's resumed on the100
             foreach(var game in the100Games)
             {
-                var update = Builders<Game>.Update.Set(x => x.IsActive, true);
-                var updateFilter = Builders<Game>.Filter.Eq(x => x.Id, game.Id);
+                var update = updateBuilder.Set(x => x.IsActive, true);
+                var updateFilter = filterBuilder.Eq(x => x.Id, game.Id);
                 await _gameCollection.UpdateOneAsync(updateFilter, update);
             }
         }

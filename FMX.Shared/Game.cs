@@ -39,7 +39,7 @@ namespace FMX.Shared
         [JsonPropertyName("group_name")]
         public string GroupName { get; set; }
 
-        [JsonPropertyName("active")]
+        [JsonIgnore]
         public bool IsActive { get; set; } = true;
     }
 }
