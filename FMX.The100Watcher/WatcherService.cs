@@ -105,9 +105,34 @@ namespace FMX.The100Watcher
             {
                 var games = await GetGamesFromThe100(groupIds[i]);
                 games.ForEach(async game => await CheckForChanges(game));
+                await SetInactiveExpiredGames(games);
             }
+
         }
 
+        private async Task SetInactiveExpiredGames(List<Game> the100Games)
+        {
+            var filter = Builders<Game>.Filter.Eq(x => x.IsActive, true);
+            var dbActiveGames = (await _gameCollection.FindAsync(filter)).ToList();
+            foreach(var dbGame in dbActiveGames)
+            {
+                if (!the100Games.Contains(dbGame))
+                {
+                    var update = Builders<Game>.Update.Set(x => x.IsActive, false);
+                    var updateFilter = Builders<Game>.Filter.Eq(x => x.Id, dbGame.Id);
+                    await _gameCollection.UpdateOneAsync(updateFilter, update);
+                }
+            }
+
+            // just ensure that if a game was made inactive before it is 
+            // restored back to active if it's resumed on the100
+            foreach(var game in the100Games)
+            {
+                var update = Builders<Game>.Update.Set(x => x.IsActive, true);
+                var updateFilter = Builders<Game>.Filter.Eq(x => x.Id, game.Id);
+                await _gameCollection.UpdateOneAsync(updateFilter, update);
+            }
+        }
 
         private async Task CheckForChanges(Game game)
         {

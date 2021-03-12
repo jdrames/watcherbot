@@ -38,5 +38,8 @@ namespace FMX.Shared
 
         [JsonPropertyName("group_name")]
         public string GroupName { get; set; }
+
+        [JsonPropertyName("active")]
+        public bool IsActive { get; set; } = true;
     }
 }
