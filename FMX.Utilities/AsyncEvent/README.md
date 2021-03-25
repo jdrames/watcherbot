@@ -8,7 +8,7 @@ Handlers are executed asyncronously but in sequential order.
 
 Setup events that will be available to listen for.
 ```csharp
-public class WithMessageEventArgs : EventArgs {
+public class WithMessageEventArgs : AsyncEventArgs {
     public string Message {get; set;}
     internal WithMessageEventArgs(string msg) : base() {
         Message = msg;
